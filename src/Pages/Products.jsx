@@ -12,7 +12,7 @@ const Products = () => {
     const { wishlistItems } = useSelector((state) => state.wishlist);
     const dispatch = useDispatch();
 
-   
+
     const [itemsPerPage] = useState(6);
     const [itemOffset, setItemOffset] = useState(0);
 
@@ -50,9 +50,9 @@ const Products = () => {
 
     return (
         <Container>
-            
 
-   
+
+
             {ProductData.length > itemsPerPage && (
                 <PaginationComponent
                     pageCount={pageCount}
@@ -64,9 +64,10 @@ const Products = () => {
                     <Col md={4} key={product.id} className="g-3">
                         <Card className="h-100">
                             <Card.Body>
-                                <NavLink to={`/product/${product.id}`}>
+                                <NavLink to={`/products/${product.id}`}>
                                     <Card.Img variant="top" src={product.thumbnail} />
                                 </NavLink>
+
                                 <h5>{product.title}</h5>
                                 <p className="text-muted mb-1">{product.brand}</p>
                                 <h6>

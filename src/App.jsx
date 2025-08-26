@@ -8,10 +8,10 @@ function App() {
     <>
       <RouterProvider router={MainRouter} />
       
-      {/* ✅ Toast Container */}
+      
       <ToastContainer
         position="top-right"
-        autoClose={3000}          // 3 sec me close
+        autoClose={3000}          
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -19,7 +19,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        closeButton={true}        // X button enable
+        closeButton={true}        
       />
     </>
   );

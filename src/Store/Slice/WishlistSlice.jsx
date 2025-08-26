@@ -38,8 +38,8 @@ export const wishlistSlice = createSlice({
 })
 
 
-// exporting action to all components
+
 export const { addItemToWishlist, removeItemFromWishlist } = wishlistSlice.actions;
 
-// exporting reducer to store 
+
 export default wishlistSlice.reducer

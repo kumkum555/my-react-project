@@ -12,11 +12,13 @@ import PaginationComponent from "../Components/PaginationComponent";
 const Categories = () => {
   const { slug } = useParams();
   const { wishlistItems } = useSelector((state) => state.wishlist);
+  const { cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
 
   const [products, setProducts] = useState([]);
 
-  const [itemsPerPage] = useState(6);
+
+  const [itemsPerPage] = useState(3);
   const [itemOffset, setItemOffset] = useState(0);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const Categories = () => {
       .then((res) => res.json())
       .then((data) => {
         setProducts(data.products || []);
-        setItemOffset(0); 
+        setItemOffset(0);
       });
   }, [slug]);
 
@@ -37,9 +39,10 @@ const Categories = () => {
     setItemOffset(newOffset);
   };
 
+
   const AddToWishlistButton = ({ product }) => {
     const found = wishlistItems.some((item) => item.productID === product.id);
-      
+
     const handleAddToWishlist = (product) => {
       if (found) {
         toast.error(product.title + " is already in wishlist");
@@ -60,26 +63,43 @@ const Categories = () => {
     );
   };
 
+
+  const AddToCartButton = ({ product }) => {
+    const found = cartItems.some((item) => item.productID === product.id);
+
+    const handleAddToCart = (product) => {
+      if (found) {
+        toast.error(product.title + " is already in cart");
+      } else {
+        dispatch(addToCart(product));
+        toast.success(product.title + " has been added to cart");
+      }
+    };
+
+    return (
+      <Button
+        size="sm"
+        variant="outline-primary"
+        onClick={() => handleAddToCart(product)}
+      >
+        {found && <Check size={20} />} Add to Cart
+      </Button>
+    );
+  };
+
   return (
     <Container className="mt-4">
       <h3 className="mb-4 text-capitalize">{slug} Products</h3>
-
-      
-      {products.length > itemsPerPage && (
-        <PaginationComponent
-          pageCount={pageCount}
-          handlePageClick={handlePageClick}
-        />
-      )}
 
       <Row>
         {currentItems.length > 0 ? (
           currentItems.map((product) => (
             <Col md={4} key={product.id} className="g-3">
               <Card className="h-100">
-                <NavLink to={`/product/${product.id}`}>
+                <NavLink to={`/products/${product.id}`}>
                   <Card.Img variant="top" src={product.thumbnail} />
                 </NavLink>
+
                 <Card.Body>
                   <h5>{product.title}</h5>
                   <p className="text-muted mb-1">{product.brand}</p>
@@ -105,13 +125,7 @@ const Categories = () => {
                 </Card.Body>
 
                 <Card.Footer className="d-flex justify-content-between">
-                  <Button
-                    size="sm"
-                    variant="outline-primary"
-                    onClick={() => dispatch(addToCart(product))} 
-                  >
-                    Add to Cart
-                  </Button>
+                  <AddToCartButton product={product} />
                   <AddToWishlistButton product={product} />
                 </Card.Footer>
               </Card>
@@ -121,6 +135,17 @@ const Categories = () => {
           <p>No products found in this category.</p>
         )}
       </Row>
+
+
+      {products.length > itemsPerPage && (
+        <div className="d-flex justify-content-center mt-4">
+          <PaginationComponent
+            pageCount={pageCount}
+            handlePageClick={handlePageClick}
+          />
+        </div>
+      )}
+
       <ToastContainer />
     </Container>
   );

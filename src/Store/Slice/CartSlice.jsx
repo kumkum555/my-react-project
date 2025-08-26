@@ -3,27 +3,46 @@ import { toast } from "react-toastify";
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState: [], // ✅ cart ek array hai
+  initialState: {
+    cartItems: []
+  }, 
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      const exists = state.find(i => i.id === item.id);
+      const exists = state.cartItems.find(i => i.id === item.id);
 
       if (!exists) {
-        state.push({ ...item, quantity: 1 });
+        state.cartItems.push({ ...item, quantity: 1 });
         toast.success("Item added to cart!");
       } else {
-        toast.info("Item already in cart!");
+        exists.quantity += 1;
+        toast.info("Item quantity increased!");
       }
     },
     removeFromCart: (state, action) => {
-      return state.filter(i => i.id !== action.payload);
+      state.cartItems = state.cartItems.filter(i => i.id !== action.payload);
+      toast.error("Item removed from cart!");
     },
-    clearCart: () => {
-      return [];
+    clearCart: (state) => {
+      state.cartItems = [];
+      toast.warn("Cart cleared!");
+    },
+    incrementQuantity: (state, action) => {
+      const item = state.cartItems.find(i => i.id === action.payload);
+      if (item) {
+        item.quantity += 1;
+        toast.info("Item quantity increased!");
+      }
+    },
+    decrementQuantity: (state, action) => {
+      const item = state.cartItems.find(i => i.id === action.payload);
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+        toast.info("Item quantity decreased!");
+      }
     }
   }
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, incrementQuantity, decrementQuantity } = cartSlice.actions;
 export default cartSlice.reducer;
