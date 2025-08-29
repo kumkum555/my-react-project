@@ -6,26 +6,27 @@ import {
   incrementQuantity,
   decrementQuantity,
 } from "../Store/Slice/CartSlice";
-import { Container, Row, Col, Table, Button, Card, Badge, Form } from "react-bootstrap";
+import { Container, Row, Col, Table, Button, Card, Badge, Form, Alert } from "react-bootstrap"; 
 import { useOutletContext } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.cartItems);
-  const { darkMode } = useOutletContext(); 
+  const { darkMode } = useOutletContext();
 
   const [coupon, setCoupon] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponMessage, setCouponMessage] = useState("");
+  const [couponVariant, setCouponVariant] = useState("danger"); 
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const shipping = cartItems.length > 0 ? 50 : 0; 
+  const shipping = cartItems[0] ? 50 : 0;
   const tax = subtotal * 0.18;
-  const baseDiscount = subtotal > 100 ? 20 : 0; 
+  const baseDiscount = subtotal > 100 ? 20 : 0;
   const totalDiscount = baseDiscount + couponDiscount;
   const orderTotal = subtotal + shipping + tax - totalDiscount;
   const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -40,30 +41,43 @@ const Cart = () => {
     const code = coupon.trim().toUpperCase();
     if (code === "SAVE10") {
       setCouponDiscount(10);
-      setCouponMessage("Coupon applied! ₹10 off");
+      setCouponMessage(" Coupon applied! ₹10 off");
+      setCouponVariant("success");
     } else if (code === "SAVE20") {
       setCouponDiscount(20);
-      setCouponMessage("Coupon applied! ₹20 off");
+      setCouponMessage(" Coupon applied! ₹20 off");
+      setCouponVariant("success");
+    } else if (code === "NEWUSER10") {  
+      setCouponDiscount(10);
+      setCouponMessage(" Welcome! NEWUSER10 applied. ₹10 off");
+      setCouponVariant("success");
     } else {
       setCouponDiscount(0);
-      setCouponMessage("Invalid coupon code");
+      setCouponMessage(" Invalid coupon code");
+      setCouponVariant("danger");
     }
+
+    
+    setTimeout(() => {
+      setCouponMessage("");
+    }, 2000);
   };
+
 
   return (
     <Container className="my-4 min-vh-100">
       <Row className="g-4">
-        
+
         <Col md={8}>
           <h3 className="mb-3 text-primary">
             🛒 My Cart <Badge bg="success">{totalCount}</Badge>
           </h3>
 
-          {cartItems.length === 0 ? (
+          {!cartItems[0] ? (
             <>
               <p className="text-muted fst-italic">Your cart is empty.</p>
               <NavLink to="/" className="btn btn-primary">
-                🛍️ Shop Now
+                 Shop Now
               </NavLink>
             </>
           ) : (
@@ -144,18 +158,17 @@ const Cart = () => {
           )}
         </Col>
 
-        
+
         <Col md={4}>
           <Card className={themeClasses + " p-3"}>
             <Card.Body>
               <h5 className={darkMode ? "text-warning" : "text-primary"}>Order Summary</h5>
               <hr className={darkMode ? "border-light" : "border-dark"} />
 
-              {cartItems.length === 0 ? (
+              {!cartItems[0] ? (
                 <p className="text-muted fst-italic">Your cart is empty.</p>
               ) : (
                 <>
-               
                   <Card className={themeClasses + " p-2 mb-3"}>
                     <Form className="d-flex">
                       <Form.Control
@@ -169,7 +182,16 @@ const Cart = () => {
                         Apply
                       </Button>
                     </Form>
-                    {couponMessage && <p className="mt-2">{couponMessage}</p>}
+
+             
+                    {couponMessage && (
+                      <Alert
+                        variant={couponVariant}
+                        className="mt-2 py-2 mb-0"
+                      >
+                        {couponMessage}
+                      </Alert>
+                    )}
                   </Card>
 
                   <p>Total items: <Badge bg="secondary">{totalCount}</Badge></p>
@@ -194,9 +216,8 @@ const Cart = () => {
                   <hr className={darkMode ? "border-light" : "border-dark"} />
                   <h6 className="fw-bold text-success">Total: ₹{orderTotal.toFixed(2)}</h6>
 
-              
                   <Button className="mt-3 w-100" variant="success">
-                    💳 Proceed to Pay
+                    Proceed to Pay
                   </Button>
                 </>
               )}

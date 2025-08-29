@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, NavLink } from "react-router-dom";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card, Button, ButtonGroup } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-
 import { Check, StarFill } from "react-bootstrap-icons";
 import { toast, ToastContainer } from "react-toastify";
 import { addItemToWishlist } from "../Store/Slice/WishlistSlice";
-import { addToCart } from "../Store/Slice/CartSlice";
+import { addToCart, incrementQuantity, decrementQuantity } from "../Store/Slice/CartSlice";
 import PaginationComponent from "../Components/PaginationComponent";
 
 const Categories = () => {
@@ -16,8 +15,6 @@ const Categories = () => {
   const dispatch = useDispatch();
 
   const [products, setProducts] = useState([]);
-
-
   const [itemsPerPage] = useState(3);
   const [itemOffset, setItemOffset] = useState(0);
 
@@ -63,26 +60,41 @@ const Categories = () => {
     );
   };
 
-
   const AddToCartButton = ({ product }) => {
-    const found = cartItems.some((item) => item.productID === product.id);
+    const found = cartItems.find((item) => item.id === product.id);
 
-    const handleAddToCart = (product) => {
-      if (found) {
-        toast.error(product.title + " is already in cart");
-      } else {
-        dispatch(addToCart(product));
-        toast.success(product.title + " has been added to cart");
-      }
-    };
+    if (found) {
+      return (
+        <ButtonGroup size="sm">
+          <Button
+            variant="danger"   
+            onClick={() => dispatch(decrementQuantity(product.id))}
+          >
+            -
+          </Button>
+          <Button variant="light" disabled>
+            {found.quantity}
+          </Button>
+          <Button
+            variant="success" 
+            onClick={() => dispatch(incrementQuantity(product.id))}
+          >
+            +
+          </Button>
+        </ButtonGroup>
+      );
+    }
 
     return (
       <Button
         size="sm"
         variant="outline-primary"
-        onClick={() => handleAddToCart(product)}
+        onClick={() => {
+          dispatch(addToCart(product));
+          toast.success(product.title + " has been added to cart");
+        }}
       >
-        {found && <Check size={20} />} Add to Cart
+        Add to Cart
       </Button>
     );
   };
@@ -135,7 +147,6 @@ const Categories = () => {
           <p>No products found in this category.</p>
         )}
       </Row>
-
 
       {products.length > itemsPerPage && (
         <div className="d-flex justify-content-center mt-4">

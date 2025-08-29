@@ -5,17 +5,20 @@ import { useState } from "react";
 import { FaShoppingCart, FaHeart, FaSun, FaMoon, FaUser, FaSignInAlt } from "react-icons/fa";
 
 const RootLayout = () => {
-  const { cartItems } = useSelector((state) => state.cart);
+  const { totalItems } = useSelector((state) => state.cart);   
   const { wishlistItems } = useSelector((state) => state.wishlist);
 
   const [darkMode, setDarkMode] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userData, setUserData] = useState(null);
+
   const navigate = useNavigate();
 
   const toggleTheme = () => setDarkMode(!darkMode);
 
   const handleLogout = () => {
-    setIsLoggedIn(false);   
+    setIsLoggedIn(false);
+    setUserData(null);
     navigate("/login");
   };
 
@@ -35,7 +38,7 @@ const RootLayout = () => {
             <Nav className="me-auto my-2 my-lg-0" navbarScroll />
 
             <div className="d-flex align-items-center">
-           
+            
               <Button
                 variant={darkMode ? "outline-light" : "outline-dark"}
                 className="me-2 d-flex align-items-center"
@@ -45,15 +48,16 @@ const RootLayout = () => {
                 {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
 
+        
               <NavLink
                 to="/cart"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
               >
                 <FaShoppingCart className="me-1" />
-                Cart <Badge bg="secondary" className="ms-1">{cartItems.length}</Badge>
+                Cart <Badge bg="secondary" className="ms-1">{totalItems}</Badge>
               </NavLink>
 
-           
+          
               <NavLink
                 to="/wishlist"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
@@ -62,6 +66,7 @@ const RootLayout = () => {
                 Wishlist <Badge bg="secondary" className="ms-1">{wishlistItems.length}</Badge>
               </NavLink>
 
+            
               {isLoggedIn ? (
                 <Button
                   onClick={handleLogout}
@@ -70,20 +75,30 @@ const RootLayout = () => {
                   <FaSignInAlt className="me-1" /> Logout
                 </Button>
               ) : (
-                <NavLink
-                  to="/login"
-                  className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
-                >
-                  <FaSignInAlt className="me-1" /> Login
-                </NavLink>
+                <>
+                  <NavLink
+                    to="/login"
+                    className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
+                  >
+                    <FaSignInAlt className="me-1" /> Login
+                  </NavLink>
+
+                  <NavLink
+                    to="/register"
+                    className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
+                  >
+                    <FaUser className="me-1" /> Register
+                  </NavLink>
+                </>
               )}
 
+              
               <NavLink
                 to="/account"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} fw-semibold d-flex align-items-center`}
               >
                 <FaUser className="me-1" />
-                Account
+                {isLoggedIn && userData ? userData.name : "Account"}
               </NavLink>
             </div>
           </Navbar.Collapse>
@@ -91,8 +106,7 @@ const RootLayout = () => {
       </Navbar>
 
       <Container fluid className="mt-3">
-    
-        <Outlet context={{ darkMode, setIsLoggedIn }} />
+        <Outlet context={{ darkMode, setIsLoggedIn, userData, setUserData }} />
       </Container>
     </div>
   );

@@ -2,7 +2,7 @@ import { Button, Container, Image, Table } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItemFromWishlist } from "../Store/Slice/WishlistSlice";
-import { addToCart } from "../Store/Slice/CartSlice"; // Import addToCart action
+import { addToCart } from "../Store/Slice/CartSlice"; 
 import { useOutletContext } from "react-router-dom";
 
 const Wishlist = () => {
@@ -15,8 +15,8 @@ const Wishlist = () => {
     : "bg-light text-dark";
 
   const handleMoveToCart = (item) => {
-    dispatch(addToCart({ ...item, quantity: 1 })); // add to cart
-    dispatch(removeItemFromWishlist(item.id)); // remove from wishlist
+    dispatch(addToCart({ ...item, quantity: 1 })); 
+    dispatch(removeItemFromWishlist(item.id)); 
     toast.success(`${item.title} moved to cart`);
   };
 

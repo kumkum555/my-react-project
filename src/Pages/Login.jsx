@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Form, Button, Card, Container, Alert } from "react-bootstrap";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, Link } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("kumkum@gmail.com");
@@ -8,15 +8,15 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const { setIsLoggedIn, darkMode } = useOutletContext(); 
+  const { setIsLoggedIn, darkMode } = useOutletContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (email === "kumkum@gmail.com" && password === "123456") {
       setError("");
-      setIsLoggedIn(true); 
-      navigate("/");      
+      setIsLoggedIn(true);
+      navigate("/");
     } else {
       setError("Invalid email or password!");
     }
@@ -61,10 +61,17 @@ const Login = () => {
           <Button
             type="submit"
             variant={darkMode ? "light" : "primary"}
-            className="w-100"
+            className="w-100 mb-2"
           >
             Login
           </Button>
+
+          
+          <div className="text-center">
+            <Link to="/forgot-password" className={darkMode ? "text-light" : "text-primary"}>
+              Forgot Password?
+            </Link>
+          </div>
         </Form>
       </Card>
     </Container>
