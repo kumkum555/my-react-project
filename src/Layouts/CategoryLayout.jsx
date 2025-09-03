@@ -1,53 +1,64 @@
 import { useEffect, useState } from "react";
-import { Card, Col, ListGroup, Row } from "react-bootstrap";
-import { NavLink, Outlet, useOutletContext } from "react-router-dom";  
+import { Card, Col, ListGroup, Row, Container } from "react-bootstrap";
+import { NavLink, Outlet, useOutletContext } from "react-router-dom";
 
 const CategoryLayout = () => {
   const [categories, setCategories] = useState([]);
-  const { darkMode } = useOutletContext();  
+  const { darkMode } = useOutletContext();
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products/categories')
-      .then(res => res.json())
-      .then(data => setCategories(data));
+    fetch("https://dummyjson.com/products/categories")
+      .then((res) => res.json())
+      .then((data) => setCategories(data));
   }, []);
 
   return (
-    <div className={darkMode ? "bg-dark text-light min-vh-100" : "bg-light text-dark min-vh-100"}>
-      <Row>
-        <Col md={3}>
-          <Card className={darkMode ? "bg-dark text-light" : ""}> 
-            <Card.Body>
-              <Card.Title className="mb-3">List of Categories</Card.Title>
-              <ListGroup>
-                {categories.slice(0, 10).map((category, index) => (
-                  <ListGroup.Item 
-                    key={index} 
-                    className={darkMode ? "bg-dark text-light" : "bg-light text-dark"} 
-                  >
-                    <NavLink
-                      className={({ isActive }) =>
-                        isActive
-                          ? "text-primary text-decoration-none"
-                          : darkMode
-                          ? "text-light text-decoration-none"
-                          : "text-dark text-decoration-none"
+    <div
+      className={
+        darkMode
+          ? "bg-dark text-light min-vh-100"
+          : "bg-light text-dark min-vh-100"
+      }
+    >
+      
+      <Container className="py-4">
+        <Row className="g-3">
+          <Col xs={12} md={3}>
+            <Card className={darkMode ? "bg-dark text-light" : ""}>
+              <Card.Body>
+                <Card.Title className="mb-3">List of Categories</Card.Title>
+                <ListGroup>
+                  {categories.slice(0, 10).map((category, index) => (
+                    <ListGroup.Item
+                      key={index}
+                      className={
+                        darkMode ? "bg-dark text-light" : "bg-light text-dark"
                       }
-                      to={`/products/category/${category.slug}`}
                     >
-                      {category.name}
-                    </NavLink>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-            </Card.Body>
-          </Card>
-        </Col>
+                      <NavLink
+                        className={({ isActive }) =>
+                          isActive
+                            ? "text-primary text-decoration-none"
+                            : darkMode
+                            ? "text-light text-decoration-none"
+                            : "text-dark text-decoration-none"
+                        }
+                        to={`/products/category/${category.slug || category}`}
+                      >
+                        {category.name || category}
+                      </NavLink>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              </Card.Body>
+            </Card>
+          </Col>
 
-        <Col md={9}>
-          <Outlet />
-        </Col>
-      </Row>
+          <Col xs={12} md={9}>
+            <Outlet />
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

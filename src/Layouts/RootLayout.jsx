@@ -1,11 +1,11 @@
-import { Container, Navbar, Nav, Badge, Button } from "react-bootstrap";
+import { Container, Navbar, Nav, Badge, Button, Row, Col } from "react-bootstrap";
 import { Outlet, NavLink, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { FaShoppingCart, FaHeart, FaSun, FaMoon, FaUser, FaSignInAlt } from "react-icons/fa";
 
 const RootLayout = () => {
-  const { totalItems } = useSelector((state) => state.cart);   
+  const { totalItems } = useSelector((state) => state.cart);
   const { wishlistItems } = useSelector((state) => state.wishlist);
 
   const [darkMode, setDarkMode] = useState(false);
@@ -24,8 +24,9 @@ const RootLayout = () => {
 
   return (
     <div className={`min-vh-100 w-100 ${darkMode ? "bg-dark text-light" : "bg-light text-dark"}`}>
+     
       <Navbar expand="lg" className={`shadow-sm ${darkMode ? "bg-dark navbar-dark" : "bg-white navbar-light"}`}>
-        <Container fluid>
+        <Container>
           <Navbar.Brand as={Link} to="/">
             <b>
               <span style={{ color: darkMode ? "#4a90e2" : "#336cd6ff" }}>INDI</span>
@@ -38,7 +39,7 @@ const RootLayout = () => {
             <Nav className="me-auto my-2 my-lg-0" navbarScroll />
 
             <div className="d-flex align-items-center">
-            
+              
               <Button
                 variant={darkMode ? "outline-light" : "outline-dark"}
                 className="me-2 d-flex align-items-center"
@@ -48,7 +49,6 @@ const RootLayout = () => {
                 {darkMode ? "Light Mode" : "Dark Mode"}
               </Button>
 
-        
               <NavLink
                 to="/cart"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
@@ -57,7 +57,7 @@ const RootLayout = () => {
                 Cart <Badge bg="secondary" className="ms-1">{totalItems}</Badge>
               </NavLink>
 
-          
+            
               <NavLink
                 to="/wishlist"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} me-2 fw-semibold d-flex align-items-center`}
@@ -92,7 +92,7 @@ const RootLayout = () => {
                 </>
               )}
 
-              
+        
               <NavLink
                 to="/account"
                 className={`btn ${darkMode ? "btn-outline-light" : "btn-light"} fw-semibold d-flex align-items-center`}
@@ -105,8 +105,22 @@ const RootLayout = () => {
         </Container>
       </Navbar>
 
-      <Container fluid className="mt-3">
-        <Outlet context={{ darkMode, setIsLoggedIn, userData, setUserData }} />
+      
+      <Container className="mt-3">
+        <Row>
+          <Col>
+            <Outlet
+              context={{
+                darkMode,
+                setDarkMode,
+                isLoggedIn,
+                setIsLoggedIn,
+                userData,
+                setUserData,
+              }}
+            />
+          </Col>
+        </Row>
       </Container>
     </div>
   );

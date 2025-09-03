@@ -10,7 +10,8 @@ import NotFound404 from "../Pages/NotFound404";
 import Cart from "../Pages/Cart";
 import Home from "../Layouts/Home";
 import CategoryLayout from "../Layouts/CategoryLayout";
-import Register from "../Pages/Register";   
+import Register from "../Pages/Register";  
+import Checkout from "../Pages/Checkout"; 
 
 const MainRouter = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ const MainRouter = createBrowserRouter([
       { path: "login", element: <Login /> },      
       { path: "register", element: <Register /> },   
       { path: "account", element: <Account /> },   
+       { path: "checkout", element: <Checkout /> },
       {
         path: "products",
         element: <CategoryLayout />,
